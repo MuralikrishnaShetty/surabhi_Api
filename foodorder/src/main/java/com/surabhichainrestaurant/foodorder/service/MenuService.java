@@ -30,15 +30,7 @@ public class MenuService {
 	}
 	
 	//saveing the menu
-	  public Menu saveMenu(Menu menu, List<MultipartFile> files) throws IOException {
-	        
-	        List<byte[]> images = new ArrayList();
-
-	        for (MultipartFile file : files) {
-	            images.add(file.getBytes());
-	        }
-
-	        menu.setImage(images);
+	  public Menu saveMenu(Menu menu) {
 	        return repo.save(menu);
 	    }
 	  //finding by name of food
