@@ -1,11 +1,15 @@
 package com.surabhichainrestaurant.foodorder.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 //
 import com.surabhichainrestaurant.foodorder.entity.User;
 import com.surabhichainrestaurant.foodorder.entity.UserLoginRequest;
+import com.surabhichainrestaurant.foodorder.exceptions.UserNotFoundException;
 import com.surabhichainrestaurant.foodorder.repo.UserRepo;
 
 @Service
@@ -46,11 +50,15 @@ public class UserService {
 		
 	}
 	//Delete
-	public void  deleteUser(Long id) {
-		java.util.Optional<User> delete=repo.findById(id);
-		if(delete!=null) {
-			repo.deleteAll();
-		}
+	public void  deleteUser(Long id) throws UserNotFoundException {
+		Optional<User> userToDelete = repo.findById(id);
+
+	    if (userToDelete.isPresent()) {
+	        repo.deleteById(id);
+	    } else {
+	        // Handle the case where the user with the specified ID is not found
+	        throw new UserNotFoundException("User with ID " + id + " not found");
+	    }
 		
 		
 	}
@@ -59,13 +67,19 @@ public class UserService {
 		User existingUser=repo.findById(id).orElse(null);
 		if(existingUser!=null) {
 			existingUser.setEmail(updatedUser.getEmail());
-			existingUser.setPassword(updatedUser.getPassword());
+			existingUser.setFirstName(updatedUser.getFirstName());
+			existingUser.setLastName(updatedUser.getLastName());
 			repo.save(existingUser);
 			return existingUser;
 		}
 		else {
 			return null;
 		}
+	}
+	//get all user
+	public List<User> alluser(){
+		List<User> users=repo.findAll();
+		return users;
 	}
 
 
